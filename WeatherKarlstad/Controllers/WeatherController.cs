@@ -93,7 +93,7 @@ namespace WeatherKarlstad.Controllers
                 // Since we have matching structures here we can convert the entire DailyTemp object at once
                 JObject jTemp = day["temp"] as JObject;
                 weather.daily[i].temp = jTemp.ToObject<DailyTemp>();
-                
+
                 weather.daily[i].clouds = (int)day["clouds"];
                 weather.daily[i].weather = (string)day["weather"][0]["main"];
                 weather.daily[i].windSpeed = (float)day["wind_speed"];
