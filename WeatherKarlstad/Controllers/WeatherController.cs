@@ -12,11 +12,26 @@ namespace WeatherKarlstad.Controllers
 {
     public class WeatherController : Controller
     {
+        // Just redirect to DailyWeather as that is our main page
         public ActionResult Index()
         {
             return RedirectToAction("DailyWeather", "Weather");
         }
 
+        // Fetch and process data, then render the daily forecast
+        public ActionResult DailyWeather()
+        {
+            var weather = new Weather();
+
+            FetchAndFillWeatherObject(weather,
+                "https://api.openweathermap.org/data/2.5/onecall?lat=59,3793&lon=13,5036&appid=97eb8642c68ac2918163ed44434e6cad&units=metric");
+
+            RoundWeatherData(weather);
+
+            return View(weather);
+        }
+
+        // Fetch and process data, then render the hourly forecast
         public ActionResult HourlyWeather()
         {
             var weather = new Weather();
@@ -29,17 +44,6 @@ namespace WeatherKarlstad.Controllers
             return View(weather);
         }
 
-        public ActionResult DailyWeather()
-        {
-            var weather = new Weather();
-
-            FetchAndFillWeatherObject(weather,
-                "https://api.openweathermap.org/data/2.5/onecall?lat=59,3793&lon=13,5036&appid=97eb8642c68ac2918163ed44434e6cad&units=metric");
-
-            RoundWeatherData(weather);
-
-            return View(weather);
-        }
 
         public void FetchAndFillWeatherObject(Weather weather, string uri)
         {
@@ -128,7 +132,7 @@ namespace WeatherKarlstad.Controllers
             }
         }
 
-        // Fetch API with GET  
+        // Fetch API with GET
         static async Task<string> GetWeatherData(string uri)
         {
             var response = string.Empty;
