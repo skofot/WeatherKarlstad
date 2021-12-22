@@ -127,19 +127,4 @@
         return new HtmlString(updatedDate.ToString("D"));
     }
 
-    public HtmlString renderTemperature(DailyTemp temp)
-    {
-        var mornColor = temp.morn > 0 ? "red" : "blue";
-        var dayColor = temp.day > 0 ? "red" : "blue";
-        var eveColor = temp.eve > 0 ? "red" : "blue";
-        var nightColor = temp.night > 0 ? "red" : "blue";
-
-        return new HtmlString("" +
-            "Morning <text style=\"color: \" " + @mornColor +"; >" + temp.morn + "</text>" +
-            " Day <text style=\"color: \" " + @dayColor +"; >" + temp.day + "</text>" +
-            " Evening <text style=\"color: \" " + @eveColor +"; >" + temp.eve + "</text>" +
-            " Night <text style=\"color: \" " + @nightColor +"; >" + temp.night + "</text>" +
-            "" +
-            "");;
-    }
 }
