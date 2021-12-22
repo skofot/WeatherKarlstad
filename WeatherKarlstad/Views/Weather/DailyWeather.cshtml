@@ -9,36 +9,34 @@
     var currentFeelsLike = Model.temp.feelsLike > 0 ? "red" : "blue";
 }
 
-    <table class="currentWeather">
-        <tr>
-            <td colspan="3">
-            <h2 style="margin-bottom:0px">The weather right now (Karlstad)</h2>
-            </td>
-        </tr>
-        <tr>
-            <td>
-                <h3 style="font-weight: bold; color: @currentColor">
-                @Model.temp.current°C
-                </h3>
-            </td>
-            <td>
-                <img src=@getImage(Model.currentWeather, Model.currentClouds)>
-                @Model.currentWeather 
-            </td>
-        </tr>
-        <tr>
-            <td>
-                Feels like
-                <text style="color: @currentFeelsLike">@Model.temp.feelsLike°C</text>
-            </td>
-            <td>
-                <text style="padding-right: 20px">Wind speed: @Model.currentWindSpeed m/s</text>
-                <img src=@Url.Content("~/Content/Images/arrow.png") style="transform: @(new HtmlString("rotate(" + Model.currentWindDir+ "deg)"))">
-            </td>
-        </tr>
-
-
-    </table>
+<table class="currentWeather">
+    <tr>
+        <td colspan="3">
+        <h2 style="margin-bottom:0px">The weather right now (Karlstad)</h2>
+        </td>
+    </tr>
+    <tr>
+        <td>
+            <h3 style="font-weight: bold; color: @currentColor">
+            @Model.temp.current°C
+            </h3>
+        </td>
+        <td>
+            <img src=@getImage(Model.currentWeather, Model.currentClouds)>
+            @Model.currentWeather
+        </td>
+    </tr>
+    <tr>
+        <td>
+            Feels like
+            <text style="color: @currentFeelsLike">@Model.temp.feelsLike°C</text>
+        </td>
+        <td>
+            <text style="padding-right: 20px">Wind speed: @Model.currentWindSpeed m/s</text>
+            <img src=@Url.Content("~/Content/Images/arrow.png") style="transform: @(new HtmlString("rotate(" + Model.currentWindDir+ "deg)"))">
+        </td>
+    </tr>
+</table>
 
 
 <h2>Daily forecast</h2>
