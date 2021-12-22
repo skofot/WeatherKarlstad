@@ -43,15 +43,19 @@
 <table>
     <tbody class="weatherTable">
 
-    <tr>
-        <th>Day</th>
-        <th colspan="2">Weather</th>
-        <th>Cloudiness</th>
-        <th>Min/Max temp (C)</th>
-        <th>Downfall</th>
-        <th>Wind speed</th>
-        <th>Wind direction</th>
-    </tr>
+        <tr>
+            <th>Day</th>
+            <th colspan="2">Weather</th>
+            <th>Cloudiness</th>
+            <th>06.00</th>
+            <th>12.00</th>
+            <th>18.00</th>
+            <th>00.00</th>
+            <th>Min/Max temp (C)</th>
+            <th>Downfall</th>
+            <th>Wind speed</th>
+            <th>Wind direction</th>
+        </tr>
     @{ 
         int i = 0;
         foreach (DailyWeather day in Model.daily)
@@ -59,21 +63,32 @@
             // Set color of temperature to blue if less than 0 degrees, otherwise red
             var maxColor = day.temp.max > 0 ? "red" : "blue";
             var minColor = day.temp.min > 0 ? "red" : "blue";
+            var mornColor = day.temp.morn > 0 ? "red" : "blue";
+            var dayColor = day.temp.day > 0 ? "red" : "blue";
+            var eveColor = day.temp.eve > 0 ? "red" : "blue";
+            var nightColor = day.temp.night > 0 ? "red" : "blue";
+
 
             <tr>
                 <td>@renderDate(i)</td>
                 <td><img src=@getImage(day.weather, day.clouds)></td>
                 <td>@day.weather</td>
                 <td>@day.clouds%</td>
+                <td><text style="color: @mornColor;">@day.temp.morn°</text></td>
+                <td><text style="color: @dayColor;">@day.temp.day°</text></td>
+                <td><text style="color: @eveColor;">@day.temp.eve°</text></td>
+                <td><text style="color: @nightColor;">@day.temp.night°</text></td>
                 <td>
-                <text style="color: @minColor;">@day.temp.min°</text>/
+                    <text style="color: @minColor;">@day.temp.min°</text>/
                     <text style="color: @maxColor">@day.temp.max°</text>
                 </td>
                 <td>@day.downfall mm</td>
                 <td>@day.windSpeed m/s</td>
                 <!--Render an arrow showing the direction of the wind-->
-                <td><img src=@Url.Content("~/Content/Images/arrow.png") 
-                         style="transform: @(new HtmlString("rotate(" + day.windDir + "deg)"))" ></td>
+                <td>
+                    <img src=@Url.Content("~/Content/Images/arrow.png")
+                         style="transform: @(new HtmlString("rotate(" + day.windDir + "deg)"))">
+                </td>
             </tr>
             i++;
         }
@@ -110,5 +125,21 @@
         var updatedDate = date.AddDays(index);
 
         return new HtmlString(updatedDate.ToString("D"));
+    }
+
+    public HtmlString renderTemperature(DailyTemp temp)
+    {
+        var mornColor = temp.morn > 0 ? "red" : "blue";
+        var dayColor = temp.day > 0 ? "red" : "blue";
+        var eveColor = temp.eve > 0 ? "red" : "blue";
+        var nightColor = temp.night > 0 ? "red" : "blue";
+
+        return new HtmlString("" +
+            "Morning <text style=\"color: \" " + @mornColor +"; >" + temp.morn + "</text>" +
+            " Day <text style=\"color: \" " + @dayColor +"; >" + temp.day + "</text>" +
+            " Evening <text style=\"color: \" " + @eveColor +"; >" + temp.eve + "</text>" +
+            " Night <text style=\"color: \" " + @nightColor +"; >" + temp.night + "</text>" +
+            "" +
+            "");;
     }
 }

@@ -111,25 +111,35 @@ namespace WeatherKarlstad.Controllers
         // Round away unneccessary decimals in the data
         private void RoundWeatherData(Weather weather)
         {
-            weather.currentWindSpeed = (float)Math.Round((double)weather.currentWindSpeed, 1);
-            weather.temp.feelsLike = (float)Math.Round((double)weather.temp.feelsLike, 1);
-            weather.temp.current = (float)Math.Round((double)weather.temp.current, 1);
+            weather.currentWindSpeed = RoundOneDec(weather.currentWindSpeed);
+            weather.temp.feelsLike = RoundOneDec(weather.temp.feelsLike);
+            weather.temp.current = RoundOneDec(weather.temp.current);
 
             foreach (HourlyWeather hour in weather.hourly)
             {
-                hour.temp.current = (float)Math.Round((double)hour.temp.current, 1);
-                hour.temp.feelsLike = (float)Math.Round((double)hour.temp.feelsLike, 1);
-                hour.windSpeed = (float)Math.Round((double)hour.windSpeed, 1);
-                hour.downfall = (float)Math.Round((double)hour.downfall, 1);
+                hour.temp.current = RoundOneDec(hour.temp.current);
+                hour.temp.feelsLike = RoundOneDec(hour.temp.feelsLike);
+                hour.windSpeed = RoundOneDec(hour.windSpeed);
+                hour.downfall = RoundOneDec(hour.downfall);
             }
 
             foreach (DailyWeather day in weather.daily)
             {
-                day.temp.max = (float)Math.Round((double)day.temp.max, 1);
-                day.temp.min = (float)Math.Round((double)day.temp.min, 1);
-                day.windSpeed = (float)Math.Round((double)day.windSpeed, 1);
-                day.downfall = (float)Math.Round((double)day.downfall, 1);
+                day.temp.max = RoundOneDec(day.temp.max);
+                day.temp.min = RoundOneDec(day.temp.min);
+                day.temp.morn = RoundOneDec(day.temp.morn);
+                day.temp.day = RoundOneDec(day.temp.day);
+                day.temp.eve = RoundOneDec(day.temp.eve);
+                day.temp.night = RoundOneDec(day.temp.night);
+                day.windSpeed = RoundOneDec(day.windSpeed);
+                day.downfall = RoundOneDec(day.downfall);
             }
+        }
+
+
+        public float RoundOneDec(float num)
+        {
+            return (float)Math.Round((double)num, 1);
         }
 
         // Fetch API with GET
