@@ -1,0 +1,116 @@
+﻿@using WeatherKarlstad.Models
+@model WeatherKarlstad.Models.Weather
+@{
+    ViewBag.Title = "Hourly Weather";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+@{
+    var currentColor = Model.temp.current > 0 ? "red" : "blue";
+    var currentFeelsLike = Model.temp.feelsLike > 0 ? "red" : "blue";
+}
+
+<table class="currentWeather">
+    <tr>
+        <td colspan="3">
+            <h2 style="margin-bottom:0px">The weather right now (Karlstad)</h2>
+        </td>
+    </tr>
+    <tr>
+        <td>
+            <h3 style="font-weight: bold; color: @currentColor">
+                @Model.temp.current°C
+            </h3>
+        </td>
+        <td>
+            <img src=@getImage(Model.currentWeather, Model.currentClouds)>
+            @Model.currentWeather
+        </td>
+    </tr>
+    <tr>
+        <td>
+            Feels like
+            <text style="color: @currentFeelsLike">@Model.temp.feelsLike°C</text>
+        </td>
+        <td>
+            <text style="padding-right: 20px">Wind speed: @Model.currentWindSpeed m/s</text>
+            <img src=@Url.Content("~/Content/Images/arrow.png") style="transform: @(new HtmlString("rotate(" + Model.currentWindDir+ "deg)"))">
+        </td>
+    </tr>
+</table>
+
+<h2>Hourly forecast</h2>
+<table>
+    <tbody class="weatherTable">
+
+        <tr>
+            <th>Hour</th>
+            <th colspan="2">Weather</th>
+            <th>Cloudiness</th>
+            <th>Temperature (C)</th>
+            <th>Feels like</th>
+            <th>Downfall</th>
+            <th>Wind speed</th>
+            <th>Wind direction</th>
+        </tr>
+        @{
+
+            int i = 0;
+            foreach (HourlyWeather hour in Model.hourly)
+            {
+                // Set color of temperature to blue if less than 0 degrees, otherwise red
+                var tempColor = hour.temp.current > 0 ? "red" : "blue";
+                var feelsLikeColor = hour.temp.feelsLike > 0 ? "red" : "blue";
+
+                <tr>
+                    <td>@renderHour(i)</td>
+
+                    <td><img src=@getImage(hour.weather, hour.clouds)></td>
+                    <td>@hour.weather</td>
+                    <td>@hour.clouds%</td>
+                    <td style="color: @tempColor;">@hour.temp.current°C</td>
+                    <td style="color: @feelsLikeColor;">@hour.temp.feelsLike°C</td>
+                    <td>@hour.downfall mm</td>
+                    <td>@hour.windSpeed m/s</td>
+                    <!--Render an arrow showing the direction of the wind-->
+                    <td>
+                        <img src=@Url.Content("~/Content/Images/arrow.png")
+                             style="transform: @(new HtmlString("rotate(" + hour.windDir + "deg)"))">
+                    </td>
+                </tr>
+                i++;
+            }
+        }
+    </tbody>
+</table>
+
+@functions
+{
+    public HtmlString getImage(string weather, int clouds)
+    {
+        // Weather type is returned from the API as a string which we use to decide which image to use
+        switch (weather)
+        {
+            case "Snow":
+                return new HtmlString(@Url.Content("~/Content/Images/snow.png"));
+            case "Clouds":
+                if (clouds < 50)
+                    return new HtmlString(@Url.Content("~/Content/Images/partly.png"));
+                else
+                    return new HtmlString(@Url.Content("~/Content/Images/moln.png"));
+            case "Clear":
+                return new HtmlString(@Url.Content("~/Content/Images/sol.png"));
+
+            default:
+                return new HtmlString(@Url.Content("~/Content/Images/sol.png"));
+        }
+    }
+
+    // Return a string containing current hour + index
+    public HtmlString renderHour(int index)
+    {
+        var date = DateTime.Now;
+        var currentHour = date.AddHours(index);
+
+        return new HtmlString(currentHour.ToString("H:00"));
+    }
+}

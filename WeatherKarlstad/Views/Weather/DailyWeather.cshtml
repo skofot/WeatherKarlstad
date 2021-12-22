@@ -1,0 +1,116 @@
+﻿@using WeatherKarlstad.Models
+@model WeatherKarlstad.Models.Weather
+@{
+    ViewBag.Title = "Daily Weather";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+@{ 
+    var currentColor = Model.temp.current > 0 ? "red" : "blue";
+    var currentFeelsLike = Model.temp.feelsLike > 0 ? "red" : "blue";
+}
+
+    <table class="currentWeather">
+        <tr>
+            <td colspan="3">
+            <h2 style="margin-bottom:0px">The weather right now (Karlstad)</h2>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <h3 style="font-weight: bold; color: @currentColor">
+                @Model.temp.current°C
+                </h3>
+            </td>
+            <td>
+                <img src=@getImage(Model.currentWeather, Model.currentClouds)>
+                @Model.currentWeather 
+            </td>
+        </tr>
+        <tr>
+            <td>
+                Feels like
+                <text style="color: @currentFeelsLike">@Model.temp.feelsLike°C</text>
+            </td>
+            <td>
+                <text style="padding-right: 20px">Wind speed: @Model.currentWindSpeed m/s</text>
+                <img src=@Url.Content("~/Content/Images/arrow.png") style="transform: @(new HtmlString("rotate(" + Model.currentWindDir+ "deg)"))">
+            </td>
+        </tr>
+
+
+    </table>
+
+
+<h2>Daily forecast</h2>
+<table>
+    <tbody class="weatherTable">
+
+    <tr>
+        <th>Day</th>
+        <th colspan="2">Weather</th>
+        <th>Cloudiness</th>
+        <th>Min/Max temp (C)</th>
+        <th>Downfall</th>
+        <th>Wind speed</th>
+        <th>Wind direction</th>
+    </tr>
+    @{ 
+        int i = 0;
+        foreach (DailyWeather day in Model.daily)
+        {
+            // Set color of temperature to blue if less than 0 degrees, otherwise red
+            var maxColor = day.temp.max > 0 ? "red" : "blue";
+            var minColor = day.temp.min > 0 ? "red" : "blue";
+
+            <tr>
+                <td>@renderDate(i)</td>
+                <td><img src=@getImage(day.weather, day.clouds)></td>
+                <td>@day.weather</td>
+                <td>@day.clouds%</td>
+                <td>
+                <text style="color: @minColor;">@day.temp.min°</text>/
+                    <text style="color: @maxColor">@day.temp.max°</text>
+                </td>
+                <td>@day.downfall mm</td>
+                <td>@day.windSpeed m/s</td>
+                <!--Render an arrow showing the direction of the wind-->
+                <td><img src=@Url.Content("~/Content/Images/arrow.png") 
+                         style="transform: @(new HtmlString("rotate(" + day.windDir + "deg)"))" ></td>
+            </tr>
+            i++;
+        }
+    }
+    </tbody>
+</table>
+
+@functions
+{
+    public HtmlString getImage(string weather, int clouds)
+    {
+        // Weather type is returned from the API as a string which we use to decide which image to use
+        switch(weather)
+        {
+            case "Snow":
+                return new HtmlString(@Url.Content("~/Content/Images/snow.png"));
+            case "Clouds":
+                if(clouds < 50)
+                    return new HtmlString(@Url.Content("~/Content/Images/partly.png"));
+                else
+                    return new HtmlString(@Url.Content("~/Content/Images/moln.png"));
+            case "Clear":
+                return new HtmlString(@Url.Content("~/Content/Images/sol.png"));
+
+            default:
+                return new HtmlString(@Url.Content("~/Content/Images/sol.png"));
+        }
+    }
+
+    // Return a string containing the date in "index" amount of days 
+    public HtmlString renderDate(int index)
+    {
+        var date = DateTime.Today;
+        var updatedDate = date.AddDays(index);
+
+        return new HtmlString(updatedDate.ToString("D"));
+    }
+}
